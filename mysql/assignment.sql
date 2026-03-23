@@ -1,0 +1,154 @@
+CREATE DATABASE TechSolutionsDB;
+USE TechSolutionsDB;
+
+CREATE TABLE DEPARTMENT(
+DeptID INT PRIMARY KEY,
+DeptName VARCHAR (50) NOT NULL,
+Location VARCHAR (50)
+);
+
+CREATE TABLE EMPLOYEE(
+EmpID INT PRIMARY KEY ,
+FirstName VARCHAR (50),
+LastName VARCHAR (50),
+Gender CHAR (1),
+Salary INT,
+HireDate DATE,
+DeptID INT,
+FOREIGN KEY (DeptID) 
+REFERENCES DEPARTMENT (DeptID)
+);
+
+CREATE TABLE PROJECT (
+ProjectID INT PRIMARY KEY,
+ProjectName VARCHAR (50),
+StartDate DATE,
+EndDate DATE,
+Budget DECIMAL (12,1)
+);
+
+CREATE TABLE WORK_ON (
+EmpID INT,
+ProjectID INT,
+HouseWorked INT,
+PRIMARY KEY(EmpID, ProjectID),
+FOREIGN KEY(EmpID) REFERENCES EMPLOYEE(EmpID),
+FOREIGN KEY(ProjectID) REFERENCES PROJECT(ProjectID)
+);
+
+INSERT INTO DEPARTMENT (DeptID, DeptName, Location) 
+VALUES(1, 'IT', 'Kathmandu'),
+(2, 'Human Resources', 'Lalitpur'),
+(3, 'Finance', 'Bhaktapur'),
+(4, 'Marketing', 'Pokhara'),
+(5, 'Research', 'Chitwan');
+
+INSERT INTO EMPLOYEE (EmpID, FirstName, LastName, Gender, Salary, HireDate, DeptID) 
+VALUES(101, 'Ram', 'Sharma', 'M', 50000, '2022-01-10', 1),
+(102, 'Sita', 'Koirala', 'F', 45000, '2021-05-15', 2),
+(103, 'Hari', 'Thapa', 'M', 60000, '2020-03-20', 3),
+(104, 'Gita', 'Rai', 'F', 48000, '2023-07-12', 4),
+(105, 'Kiran', 'Gurung', 'M', 52000, '2022-11-01', 5);
+
+INSERT INTO PROJECT (ProjectID, ProjectName, StartDate, EndDate, Budget) 
+VALUES(201, 'Website Development', '2024-01-01', '2024-06-30', 150000.0),
+(202, 'Mobile App', '2024-02-15', '2024-08-30', 200000.0),
+(203, 'Accounting System', '2024-03-01', '2024-09-15', 175000.0),
+(204, 'Marketing Campaign', '2024-04-10', '2024-07-20', 120000.0),
+(205, 'AI Research', '2024-05-01', '2024-12-31', 300000.0);
+
+INSERT INTO WORK_ON (EmpID, ProjectID, HouseWorked)
+VALUES(101, 201, 120),
+(102, 202, 100),
+(103, 203, 140),
+(104, 204, 90),
+(105, 205, 160);
+
+SELECT * FROM DEPARTMENT;
+SELECT * FROM EMPLOYEE;
+SELECT * FROM PROJECT;
+SELECT * FROM WORK_ON;
+
+UPDATE EMPLOYEE
+SET Salary = Salary + (Salary * 0.10)
+WHERE EmpID = 120;
+
+SELECT * FROM EMPLOYEE WHERE EmpID = 120;
+
+DELETE FROM WORK_ON
+WHERE ProjectID = 205;
+DELETE FROM PROJECT 
+WHERE ProjectID = 205;
+
+SELECT * 
+FROM EMPLOYEE
+WHERE Salary > 50000;
+
+SELECT FirstName, LastName, Salary 
+FROM EMPLOYEE 
+ORDER BY Salary DESC;
+
+SELECT EMPLOYEE.*
+FROM EMPLOYEE
+JOIN DEPARTMENT ON EMPLOYEE.DeptID = DEPARTMENT.DeptID
+WHERE DEPARTMENT.DeptName = 'IT';
+
+SELECT DeptID, COUNT(EmpID) AS TotalEmployees
+FROM EMPLOYEE
+GROUP BY DeptID;
+
+SELECT * FROM EMPLOYEE WHERE HireDate > '2022-01-01';
+
+SELECT FirstName, LastName, DeptName
+FROM EMPLOYEE
+JOIN DEPARTMENT ON EMPLOYEE.DeptID = DEPARTMENT.DeptID;
+
+SELECT FirstName, LastName, ProjectName
+FROM EMPLOYEE
+JOIN WORK_ON ON EMPLOYEE.EmpID = WORK_ON.EmpID
+JOIN PROJECT ON WORK_ON.ProjectID = PROJECT.ProjectID;
+
+SELECT ProjectName, SUM(HouseWorked) AS TotalHoursWorked
+FROM PROJECT
+JOIN WORK_ON ON PROJECT.ProjectID = WORK_ON.ProjectID
+GROUP BY ProjectName;
+
+SELECT DeptName, AVG(Salary) AS AvgSalary
+FROM EMPLOYEE
+JOIN DEPARTMENT ON EMPLOYEE.DeptID = DEPARTMENT.DeptID
+GROUP BY DeptName;
+
+SELECT DeptName, COUNT(EmpID) AS TotalEmployees
+FROM EMPLOYEE
+JOIN DEPARTMENT ON EMPLOYEE.DeptID = DEPARTMENT.DeptID
+GROUP BY DeptName
+ORDER BY TotalEmployees DESC
+LIMIT 1;
+
+SELECT FirstName, LastName, Salary
+FROM EMPLOYEE
+WHERE Salary > (SELECT AVG(Salary) FROM EMPLOYEE);
+
+CREATE VIEW HighSalaryEmployees AS
+SELECT * FROM EMPLOYEE
+WHERE Salary > 60000;
+
+DROP VIEW HighSalaryEmployees;
+
+CREATE VIEW HighSalaryEmployees AS
+SELECT * FROM EMPLOYEE
+WHERE Salary >= 60000;
+
+SELECT * FROM HighSalaryEmployees;
+
+CREATE INDEX idx_lastname
+ON EMPLOYEE(LastName);
+
+SHOW INDEX FROM EMPLOYEE;
+
+
+
+
+
+
+

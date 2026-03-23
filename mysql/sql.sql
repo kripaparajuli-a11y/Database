@@ -14,4 +14,7 @@ alter table Department change DNAME DEPT_NAME varchar(20);
 alter table Department modify LOC char(20);
 Drop table Department;
 
+show databases
+
+
 
